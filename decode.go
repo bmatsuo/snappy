@@ -122,8 +122,13 @@ func Decode(dst, src []byte) ([]byte, error) {
 		if offset > d || end > len(dst) {
 			return nil, ErrCorrupt
 		}
-		for ; d < end; d++ {
-			dst[d] = dst[d-offset]
+		if length > offset {
+			for ; d < end; d++ {
+				dst[d] = dst[d-offset]
+			}
+		} else {
+			copy(dst[d:end], dst[d-offset:])
+			d = end
 		}
 	}
 	if d != dLen {
